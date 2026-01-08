@@ -27,7 +27,8 @@ async function showLocalNotification() {
 
 const PAGES = {
     HABITS: "habits",
-    DATA: "data"
+    DATA: "data",
+    EDIT: "edit"
 }
 
 /**
@@ -76,6 +77,8 @@ const renderNavigatedPageSection = () => {
     habitsSectionElement.style.contentVisibility = getContentVisibilityValue(PAGES.HABITS);
     const dataSectionElement = document.getElementById("DATA_SECTION");
     dataSectionElement.style.contentVisibility = getContentVisibilityValue(PAGES.DATA);
+    const editHabitSectionElement = document.getElementById("EDIT_HABIT_SECTION");
+    editHabitSectionElement.style.contentVisibility = getContentVisibilityValue(PAGES.EDIT);
 };
 
 /**
@@ -171,6 +174,17 @@ document.addEventListener('click', (event) => {
     }
 
     /**
+     * +------------+
+     * | EDIT HABIT |
+     * +------------+
+     */
+    if (targetId.startsWith("EDIT_HABIT_BUTTON")) {
+        params.set("page", PAGES.EDIT)
+        updateUrlWithoutPageReload();
+        renderNavigatedPageSection();
+    }
+
+    /**
      * +---------------+
      * | ADD NEW HABIT |
      * +---------------+
@@ -206,6 +220,7 @@ document.addEventListener('click', (event) => {
 
 const deleteHabitButtonIdPrefix = "DELETE_HABIT_BUTTON_";
 const duplicateHabitButtonIdPrefix = "DUPLICATE_HABIT_BUTTON_";
+const editHabitButtonIdPrefix = "EDIT_HABIT_BUTTON_";
 
 /**
  * +---------------------------+
@@ -292,8 +307,14 @@ const renderHabitTableRows = () => {
             duplicateButton.className = "table_button";
             duplicateButton.id = duplicateHabitButtonIdPrefix + habit.id;
 
+            const editButton = document.createElement("button");
+            editButton.textContent = "Edit";
+            editButton.className = "table_button";
+            editButton.id = editHabitButtonIdPrefix + habit.id;
+
             tableCell_3.appendChild(deleteButton);
             tableCell_3.appendChild(duplicateButton);
+            tableCell_3.appendChild(editButton);
             tableRowElement.appendChild(tableCell_3);
             tableRowElement.id = habit.id;
 
