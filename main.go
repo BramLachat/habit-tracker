@@ -94,8 +94,8 @@ func main() {
 
 	// Combine the data
 	// We add a newline between them just in case the first file doesn't end with one
-	combinedData := append(certData, '\n')
-	combinedData = append(combinedData, keyData...)
+	// combinedData := append(certData, '\n')
+	combinedData := append(certData, keyData...)
 
 	// Write the new bundle file
 	// 0644 provides standard read/write permissions
@@ -105,4 +105,38 @@ func main() {
 	}
 
 	fmt.Println("Successfully created localhost-bundle.pem")
+
+	// 1. Define the command and its arguments separately
+	args = []string{
+		`C:\"Program Files (x86)"\stunnel\bin\stunnel.exe`,
+	}
+
+	// 2. Prepare the command
+	// https://stackoverflow.com/questions/42500570/how-to-hide-command-prompt-window-when-using-exec-in-golang
+	cmd_path = "C:\\Windows\\system32\\cmd.exe"
+	cmd_instance = exec.Command(cmd_path, args...)
+	cmd_instance.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+
+	// 3. Execute and capture the combined output (stdout and stderr)
+	output, err = cmd_instance.CombinedOutput()
+	if err != nil {
+		log.Fatalf("Command failed with error: %v\nOutput: %s", err, string(output))
+	}
+
+	// 1. Define the command and its arguments separately
+	args = []string{
+		`npx http-server C:\Workspaces\Personal\habit-tracker`,
+	}
+
+	// 2. Prepare the command
+	// https://stackoverflow.com/questions/42500570/how-to-hide-command-prompt-window-when-using-exec-in-golang
+	cmd_path = "C:\\Windows\\system32\\cmd.exe"
+	cmd_instance = exec.Command(cmd_path, args...)
+	cmd_instance.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+
+	// 3. Execute and capture the combined output (stdout and stderr)
+	output, err = cmd_instance.CombinedOutput()
+	if err != nil {
+		log.Fatalf("Command failed with error: %v\nOutput: %s", err, string(output))
+	}
 }
