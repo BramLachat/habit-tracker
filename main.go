@@ -6,14 +6,15 @@ import (
 	"net"
 	"os"
 	"os/exec"
-	"syscall"
+	//"syscall"
 )
 
 /**
 +-------------------------------------+
 | HOW TO COMPILE AND BUILD EXECUTABLE |
 +-------------------------------------+
-go build -ldflags="-s -w -H windowsgui" -o get-ip.exe main.go
+[go build -ldflags="-s -w" -o get-ip.exe main.go]
+[go build -ldflags="-s -w -H windowsgui" -o get-ip.exe main.go]
 
 Flags explained:
 	By default, Go includes debugging information which makes the file larger (usually around 2MB). If you want a smaller, cleaner executable, use "ldflags" to strip that extra data:
@@ -61,18 +62,20 @@ func main() {
 
 	// 1. Define the command and its arguments separately
 	args := []string{
-		`C:\Path\To\Your\mkcert.exe`,
+		`C:\ProgramData\chocolatey\bin\mkcert.exe`,
 		"-key-file", keyFile,
 		"-cert-file", certFile,
 		"localhost",
 		localIp,
 	}
+	fmt.Printf("%s\n", args)
 
 	// 2. Prepare the command
 	// https://stackoverflow.com/questions/42500570/how-to-hide-command-prompt-window-when-using-exec-in-golang
-	cmd_path := "C:\\Windows\\system32\\cmd.exe"
-	cmd_instance := exec.Command(cmd_path, args...)
-	cmd_instance.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	//cmd_path := "C:\\Windows\\system32\\cmd.exe"
+	//cmd_instance := exec.Command(cmd_path, args...)
+	//cmd_instance.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	cmd_instance := exec.Command(`C:\ProgramData\chocolatey\bin\mkcert.exe`, "-key-file", keyFile, "-cert-file", certFile, "localhost", localIp)
 
 	// 3. Execute and capture the combined output (stdout and stderr)
 	output, err := cmd_instance.CombinedOutput()
@@ -108,17 +111,19 @@ func main() {
 
 	// 1. Define the command and its arguments separately
 	args = []string{
-		`C:\"Program Files (x86)"\stunnel\bin\stunnel.exe`,
+		`C:\Program Files (x86)\stunnel\bin\stunnel.exe`,
 	}
 
 	// 2. Prepare the command
 	// https://stackoverflow.com/questions/42500570/how-to-hide-command-prompt-window-when-using-exec-in-golang
-	cmd_path = "C:\\Windows\\system32\\cmd.exe"
-	cmd_instance = exec.Command(cmd_path, args...)
-	cmd_instance.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	//cmd_path = "C:\\Windows\\system32\\cmd.exe"
+	//cmd_instance = exec.Command(cmd_path, args...)
+	//cmd_instance.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	cmd_instance = exec.Command(`C:\Program Files (x86)\stunnel\bin\stunnel.exe`)
 
-	// 3. Execute and capture the combined output (stdout and stderr)
-	output, err = cmd_instance.CombinedOutput()
+	// Start() to make sure the Go program doesn't keep waiting until the stunnel command is finished
+	// and immediately continues to the next line.
+	err = cmd_instance.Start()
 	if err != nil {
 		log.Fatalf("Command failed with error: %v\nOutput: %s", err, string(output))
 	}
@@ -130,12 +135,18 @@ func main() {
 
 	// 2. Prepare the command
 	// https://stackoverflow.com/questions/42500570/how-to-hide-command-prompt-window-when-using-exec-in-golang
-	cmd_path = "C:\\Windows\\system32\\cmd.exe"
-	cmd_instance = exec.Command(cmd_path, args...)
-	cmd_instance.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	//cmd_path = "C:\\Windows\\system32\\cmd.exe"
+	//cmd_instance = exec.Command(cmd_path, args...)
+	//cmd_instance.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	//cmd_instance = exec.Command(cmd_path, args...)
+	cmd_instance = exec.Command("cmd", "/C", "npx", "http-server", `C:\Workspaces\Personal\habit-tracker`)
 
-	// 3. Execute and capture the combined output (stdout and stderr)
-	output, err = cmd_instance.CombinedOutput()
+	// Direct the command's output and error streams to the terminal
+	cmd_instance.Stdout = os.Stdout
+	cmd_instance.Stderr = os.Stderr
+
+	// Use Run() instead of CombinedOutput()
+	err = cmd_instance.Run()
 	if err != nil {
 		log.Fatalf("Command failed with error: %v\nOutput: %s", err, string(output))
 	}
