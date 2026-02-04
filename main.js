@@ -205,7 +205,7 @@ document.addEventListener('click', (event) => {
      * | ADD NEW CUSTOM HABIT |
      * +----------------------+
      */
-    if (targetId === "CUSTOM_HABIT_SAVE_BUTTON") {
+    if (targetId === "CUSTOM_HABIT_ADD_BUTTON") {
         const textAreaElement = document.getElementById("CUSTOM_HABIT_TEXT_AREA");
         const habitEntry = {
             timestamp: new Date(Date.now()).toISOString(),
