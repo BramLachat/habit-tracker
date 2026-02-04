@@ -109,6 +109,9 @@ func main() {
 
 	fmt.Println("Successfully created localhost-bundle.pem")
 
+	fmt.Println("Go to: https://localhost:444")
+	fmt.Println("Starting stunnel...")
+
 	// 1. Define the command and its arguments separately
 	args = []string{
 		`C:\Program Files (x86)\stunnel\bin\stunnel.exe`,
