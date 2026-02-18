@@ -168,9 +168,15 @@ document.addEventListener('click', (event) => {
      */
     if (targetId?.startsWith(duplicateHabitButtonIdPrefix)) {
         const elementId = targetId.split(duplicateHabitButtonIdPrefix)[1];
-        habitStore.setItem(self.crypto.randomUUID(), habitEntry).then(() => {
-            renderHabitTableRows();
-        });
+        habitStore.getItem(elementId).then(habitEntry => {
+            habitEntry = {
+                timestamp: new Date(Date.now()).toISOString(),
+                description: habitEntry.description
+            };
+            habitStore.setItem(self.crypto.randomUUID(), habitEntry).then(() => {
+                renderHabitTableRows();
+            });
+        })
     }
 
     /**
@@ -178,7 +184,7 @@ document.addEventListener('click', (event) => {
      * | EDIT HABIT |
      * +------------+
      */
-    if (targetId.startsWith("EDIT_HABIT_BUTTON")) {
+    if (targetId.startsWith(editHabitButtonIdPrefix)) {
         params.set("page", PAGES.EDIT)
         updateUrlWithoutPageReload();
         renderNavigatedPageSection();
