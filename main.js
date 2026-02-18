@@ -229,7 +229,6 @@ document.addEventListener('click', (event) => {
                 timestamp: new Date(editTimestampElement.value).toISOString(),
                 description: editTextAreaElement.value
             };
-            console.log('[habitEntry]', JSON.stringify(habitEntry, null, 2));
             habitStore.setItem(draftHabitId, habitEntry).then(() => {
                 renderHabitTableRows();
                 params.set("page", PAGES.DATA)
@@ -288,20 +287,19 @@ const editHabitButtonIdPrefix = "EDIT_HABIT_BUTTON_";
 const habitButtonIdPrefix = "HABIT_BUTTON_"
 const habitButtonsMap = new Map();
 habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Wakker")
-habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Glas Water (250 ml)")
-habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Fles Water (500 ml)")
-habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Slappe Kak")
-habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Sterke Kak")
+habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Glas Water (200 ml)")
+habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Dopper Fles Water")
 habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Tanden Gepoetst")
-habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Tas Koffie")
-habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Tas Thee")
+habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Tas Koffie / Thee")
 habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Crossfit")
 habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Primerose Pilletje")
-habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Magnesium")
-habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Frisdrank")
-habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Alcohol")
+habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Geen Frisdrank")
+habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Geen Alcohol")
 habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Powernap")
 habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Slapen")
+habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "5 min core, legs, arms")
+habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Ontbijt: 150g yoghurt, 20g noten, 20g olijfolie, 20g proteine, fruit")
+habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Middag: 4 boterham, kippewit, 2 ei, pesto, komkommer")
 
 /**
  * +------------------------------+
