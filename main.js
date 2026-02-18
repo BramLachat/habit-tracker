@@ -1,4 +1,4 @@
-import { habitStore } from "./store.js";
+import { habitStore, habitDraftStore } from "./store.js";
 
 /**
  * +-------------------------+
@@ -30,6 +30,8 @@ const PAGES = {
     DATA: "data",
     EDIT: "edit"
 }
+
+const HABIT_DRAFT_IDENTIFIER = "HABIT_DRAFT_IDENTIFIER";
 
 /**
  * +--------------------------------+
@@ -139,14 +141,19 @@ document.addEventListener('click', (event) => {
         params.set("page", PAGES.DATA)
         updateUrlWithoutPageReload();
         renderNavigatedPageSection();
+        return;
     }
+
     if (targetId === "HABITS_NAVIGATION_BUTTON") {
         params.set("page", PAGES.HABITS)
         updateUrlWithoutPageReload();
         renderNavigatedPageSection();
+        return;
     }
+
     if (targetId === "COPY_TO_CLIPBOARD_BUTTON") {
         copyHabitsAsMarkdownToClipboard();
+        return;
     }
 
     /**
@@ -159,6 +166,7 @@ document.addEventListener('click', (event) => {
         habitStore.removeItem(elementId).then(() => {
             renderHabitTableRows();
         });
+        return;
     }
 
     /**
@@ -177,6 +185,7 @@ document.addEventListener('click', (event) => {
                 renderHabitTableRows();
             });
         })
+        return;
     }
 
     /**
@@ -185,9 +194,50 @@ document.addEventListener('click', (event) => {
      * +------------+
      */
     if (targetId.startsWith(editHabitButtonIdPrefix)) {
-        params.set("page", PAGES.EDIT)
-        updateUrlWithoutPageReload();
-        renderNavigatedPageSection();
+        const elementId = targetId.split(editHabitButtonIdPrefix)[1];
+        habitStore.getItem(elementId).then(habitEntry => {
+            const editTextAreaElement = document.getElementById("EDIT_HABIT_TEXT_AREA");
+            editTextAreaElement.value = habitEntry.description;
+            const editTimestampElement = document.getElementById("EDIT_HABIT_TIMESTAMP");
+
+            // Convert ISO 8601 format (UTC) to format datetime-local input expects.
+            const dateObj = new Date(habitEntry.timestamp);
+            const timezoneOffsetInMinutes = dateObj.getTimezoneOffset();
+            const timezoneOffsetInMs = timezoneOffsetInMinutes * 60000;
+            const habitISOTimestamp = new Date(dateObj.getTime() - timezoneOffsetInMs).toISOString().slice(0, 16);
+            editTimestampElement.value = habitISOTimestamp;
+
+            habitDraftStore.setItem(HABIT_DRAFT_IDENTIFIER, elementId);
+            params.set("page", PAGES.EDIT);
+            updateUrlWithoutPageReload();
+            renderNavigatedPageSection();
+        })
+        return;
+    }
+
+    /**
+     * +-----------------------+
+     * | CONFIRM HABIT CHANGES |
+     * +-----------------------+
+     */
+    if (targetId === "EDIT_HABIT_SAVE_BUTTON") {
+        const editTextAreaElement = document.getElementById("EDIT_HABIT_TEXT_AREA");
+        const editTimestampElement = document.getElementById("EDIT_HABIT_TIMESTAMP");
+
+        habitDraftStore.getItem(HABIT_DRAFT_IDENTIFIER).then(draftHabitId => {
+            const habitEntry = {
+                timestamp: new Date(editTimestampElement.value).toISOString(),
+                description: editTextAreaElement.value
+            };
+            console.log('[habitEntry]', JSON.stringify(habitEntry, null, 2));
+            habitStore.setItem(draftHabitId, habitEntry).then(() => {
+                renderHabitTableRows();
+                params.set("page", PAGES.DATA)
+                updateUrlWithoutPageReload();
+                renderNavigatedPageSection();
+            });
+        })
+        return;
     }
 
     /**
@@ -204,6 +254,7 @@ document.addEventListener('click', (event) => {
         habitStore.setItem(self.crypto.randomUUID(), habitEntry).then(() => {
             renderHabitTableRows();
         });
+        return;
     }
 
     /**
@@ -221,6 +272,7 @@ document.addEventListener('click', (event) => {
             renderHabitTableRows();
         });
         textAreaElement.value = "";
+        return;
     }
 });
 
