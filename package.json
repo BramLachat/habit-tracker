@@ -1,0 +1,21 @@
+{
+  "name": "habit-tracker",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BramLachat/habit-tracker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BramLachat/habit-tracker/issues"
+  },
+  "homepage": "https://github.com/BramLachat/habit-tracker#readme",
+  "description": "",
+  "dependencies": {
+    "@pwabuilder/cli": "^0.0.17"
+  }
+}
