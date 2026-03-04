@@ -286,7 +286,7 @@ const editHabitButtonIdPrefix = "EDIT_HABIT_BUTTON_";
  */
 const habitButtonIdPrefix = "HABIT_BUTTON_"
 const habitButtonsMap = new Map();
-habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "ab3158bd-4ae8-4bdf-8cf9-13d1905b2c88")
+habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Wakker")
 habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Glas Water (200 ml)")
 habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Dopper Fles Water")
 habitButtonsMap.set(habitButtonIdPrefix + self.crypto.randomUUID(), "Tanden Gepoetst")

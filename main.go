@@ -144,6 +144,9 @@ func main() {
 	//cmd_instance = exec.Command(cmd_path, args...)
 	cmd_instance = exec.Command("powershell", "-File", `C:\Workspaces\Personal\habit-tracker\node_modules\.bin\pwa.ps1`, "start")
 
+	// Set the working directory for the command
+	cmd_instance.Dir = `C:\Workspaces\Personal\habit-tracker\habit-tracker-pwa`
+
 	// Direct the command's output and error streams to the terminal
 	cmd_instance.Stdout = os.Stdout
 	cmd_instance.Stderr = os.Stderr
