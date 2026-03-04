@@ -67,10 +67,23 @@ self.addEventListener("activate", event => {
 });
 
 self.addEventListener("fetch", event => {
+    // We only handle GET requests
+    if (event.request.method !== 'GET') return;
+
+    // F5 triggers a reload, in this case we want to skip the cache match and go to network
+    // This allows for "instant update" on F5 during development.
+    // 'no-cache' is sometimes used by browsers during reloads or when bypassing cache.
+    // We also check for 'navigate' to ensure the main document reload is caught.
+    const isReload = event.request.cache === 'reload' || 
+                     event.request.cache === 'no-cache' ||
+                     (event.request.mode === 'navigate' && event.request.cache !== 'only-if-cached');
+
     event.respondWith(
-        fetch(event.request, { cache: "no-store" })
-            .then(networkResponse => {
-                // Check if we received a valid response
+        caches.match(event.request).then(cachedResponse => {
+            // Force a network request with cache bypass if it's a reload
+            // We use 'no-store' during reloads to ensure we absolutely bypass ALL caches
+            const fetchOptions = isReload ? { cache: 'no-store' } : {};
+            const fetchPromise = fetch(event.request, fetchOptions).then(networkResponse => {
                 if (networkResponse && networkResponse.status === 200) {
                     const responseClone = networkResponse.clone();
                     caches.open(cacheName).then(cache => {
@@ -78,11 +91,25 @@ self.addEventListener("fetch", event => {
                     });
                 }
                 return networkResponse;
-            })
-            .catch(() => {
-                // If network fails (offline), look in cache
-                return caches.match(event.request);
-            })
+            }).catch(error => {
+                // If the network request fails (e.g., offline)
+                if (cachedResponse) {
+                    return cachedResponse;
+                }
+                throw error;
+            });
+
+            // If it's a reload, we MUST wait for the network to get the latest version
+            if (isReload) {
+                return fetchPromise.catch(() => cachedResponse);
+            }
+
+            // Otherwise, return the cached response immediately if it exists,
+            // while the fetchPromise updates the cache in the background (Stale-While-Revalidate)
+            // If we are on the main page (index.html or /) and not reloading, we still want to ensure
+            // that we check for updates to the service worker itself.
+            return cachedResponse || fetchPromise;
+        })
     );
 });
 

@@ -142,7 +142,7 @@ func main() {
 	//cmd_instance = exec.Command(cmd_path, args...)
 	//cmd_instance.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	//cmd_instance = exec.Command(cmd_path, args...)
-	cmd_instance = exec.Command("cmd", "/C", "npx", "http-server", `C:\Workspaces\Personal\habit-tracker`)
+	cmd_instance = exec.Command("cmd", "/C", "npx", "http-server", "-c-1", `C:\Workspaces\Personal\habit-tracker`)
 
 	// Direct the command's output and error streams to the terminal
 	cmd_instance.Stdout = os.Stdout
